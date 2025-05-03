@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+
+{% block title %}Treatment Navigator - Step 3{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-10 offset-lg-1">
+        <div class="card shadow">
+            <div class="card-body p-4">
+                <h2 class="card-title mb-4">Step 3: Patient Information</h2>
+                
+                <!-- Progress bar -->
+                <div class="progress mb-4" style="height: 30px;">
+                    <div class="progress-bar bg-primary" role="progressbar" style="width: 75%;" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">Step 3 of 4</div>
+                </div>
+                
+                <p class="lead mb-4">
+                    Provide patient details to personalize the treatment analysis for <strong>{{ condition }}</strong>
+                </p>
+                
+                <form method="POST" action="{{ url_for('step3') }}">
+                    <!-- Basic Information Section -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0">Basic Information</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="age" class="form-label">Age</label>
+                                    <input type="number" class="form-control" id="age" name="age" min="0" max="120" required>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="gender" class="form-label">Gender</label>
+                                    <select class="form-select" id="gender" name="gender" required>
+                                        <option value="" selected disabled>Select gender</option>
+                                        <option value="male">Male</option>
+                                        <option value="female">Female</option>
+                                        <option value="non-binary">Non-binary</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="comorbidities" class="form-label">Comorbidities (comma separated)</label>
+                                <input type="text" class="form-control" id="comorbidities" name="comorbidities" placeholder="e.g., hypertension, obesity, asthma">
+                                <div class="form-text">Other medical conditions the patient has.</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="current_medications" class="form-label">Current Medications (comma separated)</label>
+                                <input type="text" class="form-control" id="current_medications" name="current_medications" placeholder="e.g., lisinopril, metformin">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="allergies" class="form-label">Allergies (comma separated)</label>
+                                <input type="text" class="form-control" id="allergies" name="allergies" placeholder="e.g., penicillin, peanuts">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="insurance" class="form-label">Insurance</label>
+                                <input type="text" class="form-control" id="insurance" name="insurance" placeholder="e.g., Medicare, Blue Cross">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Lifestyle Information Section -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0">Lifestyle Information</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="occupation" class="form-label">Occupation</label>
+                                    <input type="text" class="form-control" id="occupation" name="occupation" placeholder="e.g., teacher, engineer">
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="activity_level" class="form-label">Activity Level</label>
+                                    <select class="form-select" id="activity_level" name="activity_level">
+                                        <option value="" selected disabled>Select level</option>
+                                        <option value="sedentary">Sedentary</option>
+                                        <option value="light">Light Activity</option>
+                                        <option value="moderate">Moderate Activity</option>
+                                        <option value="active">Very Active</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="dietary_preferences" class="form-label">Dietary Preferences</label>
+                                    <input type="text" class="form-control" id="dietary_preferences" name="dietary_preferences" placeholder="e.g., vegetarian, low-carb">
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="stress_level" class="form-label">Stress Level</label>
+                                    <select class="form-select" id="stress_level" name="stress_level">
+                                        <option value="" selected disabled>Select level</option>
+                                        <option value="low">Low</option>
+                                        <option value="moderate">Moderate</option>
+                                        <option value="high">High</option>
+                                        <option value="severe">Severe</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Patient Values Section -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0">Patient Values & Preferences</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label for="priorities" class="form-label">Treatment Priorities (comma separated)</label>
+                                <input type="text" class="form-control" id="priorities" name="priorities" placeholder="e.g., minimizing side effects, convenience, effectiveness">
+                                <div class="form-text">What aspects of treatment are most important to the patient?</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="treatment_preferences" class="form-label">Treatment Preferences</label>
+                                <textarea class="form-control" id="treatment_preferences" name="treatment_preferences" rows="3" placeholder="e.g., prefers non-invasive treatments, willing to try new approaches"></textarea>
+                                <div class="form-text">Any specific preferences or concerns about treatment approaches.</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="{{ url_for('step2') }}" class="btn btn-secondary">Back</a>
+                        <button type="submit" class="btn btn-primary">Analyze Treatment Options</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-body">
+                <h5 class="card-title">About This Step</h5>
+                <p class="card-text">
+                    The information you provide here helps personalize the treatment analysis to the specific patient. 
+                    More detailed information leads to more accurate and relevant recommendations.
+                </p>
+                <div class="alert alert-info mt-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle me-2" viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                        <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+                    </svg>
+                    All information is processed securely and used only for treatment analysis.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

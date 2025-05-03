@@ -1,0 +1,211 @@
+# Treatment Navigator Flask Implementation Guide
+
+This guide provides step-by-step instructions for implementing the Treatment Navigator multi-agent system using Flask and Azure AI Foundry.
+
+## Prerequisites
+
+- Azure subscription with access to Azure AI Foundry
+- Python 3.8+ installed
+- Basic knowledge of Python, Flask, and Azure services
+- Visual Studio Code or your preferred code editor
+
+## 1. Azure AI Foundry Setup
+
+### 1.1 Create a New Project
+
+1. Sign in to the [Azure Portal](https://portal.azure.com)
+2. Navigate to Azure AI Foundry
+3. Click "+ Create project"
+4. Provide a name for your project (e.g., "TreatmentNavigator")
+5. Create or select an existing AI hub
+6. Click "Create" to initialize your project
+
+### 1.2 Deploy Required Models
+
+For a medical decision support system, we recommend deploying GPT-4o or GPT-4 Turbo:
+
+1. In your project, navigate to "Models" under "Build and customize"
+2. Click "Deploy a model"
+3. Select "GPT-4o" or another advanced model from the catalog
+4. Complete the deployment process
+
+### 1.3 Create the Azure AI Search Resource
+
+1. In the Azure Portal, search for "Azure AI Search"
+2. Click "Create"
+3. Configure your search service with appropriate settings (Standard tier recommended)
+4. Create a new index called "medical-treatments-index" with appropriate fields for medical data
+5. Ingest medical treatment data into your index (research papers, clinical guidelines, etc.)
+
+## 2. Setting Up the Flask Application
+
+### 2.1 Clone or Create the Project Directory
+
+```bash
+mkdir treatment_navigator
+cd treatment_navigator
+```
+
+### 2.2 Create a Python Virtual Environment
+
+```bash
+python -m venv venv
+```
+
+Activate the virtual environment:
+
+- On Windows: `venv\Scripts\activate`
+- On macOS/Linux: `source venv/bin/activate`
+
+### 2.3 Install Required Dependencies
+
+Create a `requirements.txt` file with the packages listed in the provided file, then install:
+
+```bash
+pip install -r requirements.txt
+```
+
+### 2.4 Project Structure
+
+Set up your project with the following structure:
+
+```
+treatment_navigator/
+│
+├── app.py                  # Main Flask application
+├── config.py               # Configuration settings
+├── requirements.txt        # Python dependencies
+│
+├── static/                 # Static files
+│   ├── css/
+│   │   └── style.css       # Custom CSS
+│   ├── js/
+│   │   └── main.js         # JavaScript for frontend interactivity
+│   └── img/
+│       └── logo.png        # Images
+│
+├── templates/              # HTML templates
+│   ├── base.html           # Base template with common elements
+│   ├── index.html          # Home page
+│   ├── step1.html          # Condition entry page
+│   ├── step2.html          # Treatment options page
+│   ├── step3.html          # Patient details page
+│   └── results.html        # Results display page
+│
+├── models/                 # Python modules for agents
+│   ├── __init__.py
+│   ├── agent_manager.py    # Agent creation and management
+│   └── orchestrator.py     # Multi-agent orchestration
+│
+└── utils/                  # Utility functions
+    ├── __init__.py
+    └── ai_foundry.py       # Azure AI Foundry integration
+```
+
+### 2.5 Configuration Setup
+
+1. Copy the provided `.env` template file to your project root
+2. Update the values with your Azure credentials and settings
+3. Ensure the `.env` file is included in your `.gitignore` if using version control
+
+## 3. Implementing the Flask Application
+
+Copy the provided code files into their respective locations in your project structure.
+
+### 3.1 Create Empty Python Modules
+
+Create the necessary `__init__.py` files in the `models` and `utils` directories to make them proper Python packages:
+
+```bash
+mkdir -p models utils
+touch models/__init__.py utils/__init__.py
+```
+
+### 3.2 Create Empty Directory Structure for Static Files
+
+```bash
+mkdir -p static/css static/js static/img templates
+```
+
+## 4. Running the Application
+
+1. Ensure your virtual environment is activated
+2. Start the Flask development server:
+
+```bash
+python app.py
+```
+
+3. Access the application in your web browser at http://localhost:5000
+
+## 5. Testing and Validation
+
+### 5.1 Test Each Step of the Workflow
+
+1. Start on the home page and navigate through each step
+2. Test with various medical conditions and treatment options
+3. Verify that the multi-agent analysis works correctly
+4. Check that results are displayed properly
+
+### 5.2 Common Issues and Troubleshooting
+
+- **Connection Issues**: Ensure your Azure credentials are correct in the `.env` file
+- **Agent Creation Errors**: Check the Azure AI Foundry portal for error messages
+- **Session Issues**: Verify that your Flask secret key is properly set
+- **Template Errors**: Check for typos or missing variables in the templates
+
+## 6. Deployment to Production
+
+For production deployment, consider the following:
+
+1. Use a production-ready web server like Gunicorn:
+   ```bash
+   pip install gunicorn
+   gunicorn -w 4 app:app
+   ```
+
+2. Set up a proper database for session management instead of using Flask's default
+3. Enable HTTPS by setting up SSL certificates
+4. Update the `.env` file for production settings:
+   - Set `DEBUG=False`
+   - Set a strong, random `SECRET_KEY`
+   - Consider using environment variables instead of a `.env` file
+
+## 7. Customization Options
+
+### 7.1 Adding More Agent Types
+
+1. Define new agent types in `models/agent_manager.py`
+2. Update the templates to display the new agent types
+3. Modify the analysis flow to include the new agents
+
+### 7.2 Integrating with Electronic Health Records
+
+If you have access to EHR systems, you can enhance the application by:
+
+1. Adding OAuth integration for patient data access
+2. Creating an EHR connector in the `utils` directory
+3. Pre-filling patient data from EHR records
+
+### 7.3 Advanced Visualization
+
+Enhance result visualizations with:
+
+1. Chart.js for interactive charts
+2. Custom CSS for better rating displays
+3. Treatment comparison graphs
+
+## 8. Maintenance and Updates
+
+Regular maintenance tasks should include:
+
+1. Keeping Azure OpenAI models updated to the latest versions
+2. Updating the medical knowledge base with new research
+3. Monitoring agent performance and refining instructions
+4. Incorporating user feedback to improve the system
+
+## Conclusion
+
+This implementation guide provides the foundation for building a powerful Treatment Navigator system with Flask and Azure AI Foundry. By following these steps, you'll create a multi-agent medical decision support system that can help patients and healthcare providers make more informed treatment decisions.
+
+For questions or additional support, please contact your Azure account representative or refer to the Azure AI Foundry documentation.

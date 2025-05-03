@@ -1,0 +1,205 @@
+{% extends 'base.html' %}
+
+{% block title %}Treatment Navigator - Results{% endblock %}
+
+{% block head %}
+<style>
+    .rating {
+        display: inline-block;
+    }
+    
+    .rating-number {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2rem;
+        height: 2rem;
+        border-radius: 50%;
+        color: white;
+        font-weight: bold;
+    }
+    
+    .rating-1 { background-color: #dc3545; }
+    .rating-2 { background-color: #fd7e14; }
+    .rating-3 { background-color: #ffc107; }
+    .rating-4 { background-color: #20c997; }
+    .rating-5 { background-color: #198754; }
+    
+    .category-evidence { border-left: 4px solid #0d6efd; }
+    .category-side-effects { border-left: 4px solid #dc3545; }
+    .category-lifestyle { border-left: 4px solid #198754; }
+    .category-cost { border-left: 4px solid #fd7e14; }
+    .category-values { border-left: 4px solid #6f42c1; }
+    
+    @media print {
+        .no-print {
+            display: none !important;
+        }
+        
+        .card {
+            break-inside: avoid;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-10 offset-lg-1">
+        <div class="card shadow mb-4">
+            <div class="card-body p-4">
+                <h2 class="card-title mb-4">Treatment Analysis Results</h2>
+                
+                <!-- Progress bar -->
+                <div class="progress mb-4 no-print" style="height: 30px;">
+                    <div class="progress-bar bg-primary" role="progressbar" style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">Complete</div>
+                </div>
+                
+                <div class="alert alert-primary mb-4">
+                    <h5>Condition: {{ condition }}</h5>
+                    <p class="mb-0">Analysis completed on {{ now().strftime('%B %d, %Y at %I:%M %p') }}</p>
+                </div>
+                
+                <!-- Recommendation Section -->
+                <div class="card mb-5">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="mb-0">Treatment Recommendation</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="recommendation-content">
+                            {{ recommendation|safe }}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Detailed Analysis Section -->
+                <h3 class="mb-4">Detailed Analysis by Treatment</h3>
+                
+                <div class="accordion" id="treatmentAccordion">
+                    {% for treatment, analysis in treatment_analyses.items() %}
+                    <div class="accordion-item mb-3 border">
+                        <h2 class="accordion-header" id="heading{{ loop.index }}">
+                            <button class="accordion-button {% if not loop.first %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ loop.index }}" aria-expanded="{{ 'true' if loop.first else 'false' }}" aria-controls="collapse{{ loop.index }}">
+                                <strong>{{ treatment }}</strong>
+                            </button>
+                        </h2>
+                        <div id="collapse{{ loop.index }}" class="accordion-collapse collapse {% if loop.first %}show{% endif %}" aria-labelledby="heading{{ loop.index }}" data-bs-parent="#treatmentAccordion">
+                            <div class="accordion-body">
+                                <div class="row g-4">
+                                    <!-- Evidence Analysis -->
+                                    <div class="col-md-6">
+                                        <div class="card h-100 category-evidence">
+                                            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                                                <h5 class="mb-0 text-primary">Evidence Support</h5>
+                                                <span class="rating">
+                                                    {% set rating = analysis.evidence|extract_rating %}
+                                                    <span class="rating-number rating-{{ rating }}">{{ rating }}</span>
+                                                </span>
+                                            </div>
+                                            <div class="card-body">
+                                                {{ analysis.evidence|safe }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Side Effects Analysis -->
+                                    <div class="col-md-6">
+                                        <div class="card h-100 category-side-effects">
+                                            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                                                <h5 class="mb-0 text-danger">Side Effects</h5>
+                                                <span class="rating">
+                                                    {% set rating = analysis.side_effects|extract_rating %}
+                                                    <span class="rating-number rating-{{ rating }}">{{ rating }}</span>
+                                                </span>
+                                            </div>
+                                            <div class="card-body">
+                                                {{ analysis.side_effects|safe }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Lifestyle Compatibility -->
+                                    <div class="col-md-6">
+                                        <div class="card h-100 category-lifestyle">
+                                            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                                                <h5 class="mb-0 text-success">Lifestyle Compatibility</h5>
+                                                <span class="rating">
+                                                    {% set rating = analysis.lifestyle|extract_rating %}
+                                                    <span class="rating-number rating-{{ rating }}">{{ rating }}</span>
+                                                </span>
+                                            </div>
+                                            <div class="card-body">
+                                                {{ analysis.lifestyle|safe }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Cost Analysis -->
+                                    <div class="col-md-6">
+                                        <div class="card h-100 category-cost">
+                                            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                                                <h5 class="mb-0 text-warning">Cost Analysis</h5>
+                                                <span class="rating">
+                                                    {% set rating = analysis.cost|extract_rating %}
+                                                    <span class="rating-number rating-{{ rating }}">{{ rating }}</span>
+                                                </span>
+                                            </div>
+                                            <div class="card-body">
+                                                {{ analysis.cost|safe }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Value Alignment -->
+                                    <div class="col-12">
+                                        <div class="card category-values">
+                                            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                                                <h5 class="mb-0 text-purple">Value Alignment</h5>
+                                                <span class="rating">
+                                                    {% set rating = analysis.values|extract_rating %}
+                                                    <span class="rating-number rating-{{ rating }}">{{ rating }}</span>
+                                                </span>
+                                            </div>
+                                            <div class="card-body">
+                                                {{ analysis.values|safe }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <div class="d-flex justify-content-between mt-5 no-print">
+                    <a href="{{ url_for('step3') }}" class="btn btn-secondary">Back</a>
+                    <div>
+                        <button type="button" class="btn btn-outline-primary me-2" onclick="window.print()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-printer" viewBox="0 0 16 16">
+                                <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z"/>
+                                <path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2H5zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4V3zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2H5zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1z"/>
+                            </svg>
+                            Print Results
+                        </button>
+                        <a href="{{ url_for('step1') }}" class="btn btn-primary">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-repeat" viewBox="0 0 16 16">
+                                <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z"/>
+                                <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"/>
+                            </svg>
+                            Start New Analysis
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="alert alert-info mt-4 no-print">
+                    <small class="text-muted">
+                        <strong>Note:</strong> This analysis is provided for informational purposes only and should not replace professional medical advice. 
+                        Always consult with healthcare providers before making treatment decisions.
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

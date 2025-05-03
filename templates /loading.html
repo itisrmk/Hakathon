@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+
+{% block title %}Treatment Navigator - Analyzing{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 offset-lg-2 text-center">
+        <div class="card shadow">
+            <div class="card-body p-5">
+                <h2 class="card-title mb-4">Analyzing Treatment Options</h2>
+                
+                <!-- Progress bar -->
+                <div class="progress mb-4" style="height: 30px;">
+                    <div class="progress-bar bg-primary progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                
+                <div class="my-5">
+                    <div class="spinner-border text-primary" role="status" style="width: 5rem; height: 5rem;">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    
+                    <div class="mt-4" id="analysis-status">
+                        <h4>Analysis in Progress</h4>
+                        <p class="text-muted" id="status-message">Initializing treatment analysis...</p>
+                    </div>
+                </div>
+                
+                <div class="mt-5">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5>Condition: <span class="text-primary">{{ condition }}</span></h5>
+                            <h6 class="text-muted">Analyzing treatments:</h6>
+                            <ul class="list-group list-group-flush mt-2">
+                                {% for treatment in treatments %}
+                                <li class="list-group-item">{{ treatment }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle me-2" viewBox="0 0 16 16">
+                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                            <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+                        </svg>
+                        This analysis typically takes 2-3 minutes to complete. Please don't close this tab.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const statusMessages = [
+            "Initializing treatment analysis...",
+            "Reviewing medical evidence for treatments...",
+            "Analyzing potential side effects...",
+            "Evaluating lifestyle compatibility...",
+            "Assessing cost implications...",
+            "Checking alignment with patient values...",
+            "Comparing treatment options...",
+            "Generating comprehensive recommendation...",
+            "Finalizing analysis results..."
+        ];
+        
+        const statusElement = document.getElementById('status-message');
+        let currentIndex = 0;
+        
+        // Update status message every 10 seconds
+        const messageInterval = setInterval(function() {
+            currentIndex = (currentIndex + 1) % statusMessages.length;
+            statusElement.textContent = statusMessages[currentIndex];
+        }, 8000);
+        
+        // Start the analysis
+        startAnalysis();
+        
+        async function startAnalysis() {
+            try {
+                const response = await fetch('{{ url_for("process_analysis") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    clearInterval(messageInterval);
+                    statusElement.textContent = "Analysis complete! Redirecting to results...";
+                    
+                    // Redirect to results page
+                    setTimeout(() => {
+                        window.location.href = data.redirect;
+                    }, 1500);
+                } else {
+                    clearInterval(messageInterval);
+                    statusElement.textContent = "Error: " + (data.error || "An unknown error occurred");
+                    document.querySelector('.spinner-border').style.display = 'none';
+                    document.getElementById('analysis-status').innerHTML += `
+                        <div class="alert alert-danger mt-3">
+                            <strong>Analysis failed</strong><br>
+                            ${data.error || "An unknown error occurred during analysis. Please try again."}
+                            <div class="mt-3">
+                                <a href="{{ url_for('step3') }}" class="btn btn-outline-secondary">Go Back</a>
+                            </div>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                clearInterval(messageInterval);
+                statusElement.textContent = "Connection error: " + error.message;
+                document.querySelector('.spinner-border').style.display = 'none';
+                document.getElementById('analysis-status').innerHTML += `
+                    <div class="alert alert-danger mt-3">
+                        <strong>Connection error</strong><br>
+                        Please check your internet connection and try again.
+                        <div class="mt-3">
+                            <a href="{{ url_for('step3') }}" class="btn btn-outline-secondary">Go Back</a>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+    });
+</script>
+{% endblock %}
