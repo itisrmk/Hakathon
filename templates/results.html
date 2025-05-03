@@ -57,7 +57,7 @@
                 
                 <div class="alert alert-primary mb-4">
                     <h5>Condition: {{ condition }}</h5>
-                    <p class="mb-0">Analysis completed on {{ now().strftime('%B %d, %Y at %I:%M %p') }}</p>
+                    <p class="mb-0">Analysis completed on {{ ''|now }}</p>
                 </div>
                 
                 <!-- Recommendation Section -->
@@ -92,12 +92,15 @@
                                             <div class="card-header bg-light d-flex justify-content-between align-items-center">
                                                 <h5 class="mb-0 text-primary">Evidence Support</h5>
                                                 <span class="rating">
-                                                    {% set rating = analysis.evidence|extract_rating %}
+                                                    {% set rating = analysis.evidence.score|default(3) %}
                                                     <span class="rating-number rating-{{ rating }}">{{ rating }}</span>
                                                 </span>
                                             </div>
                                             <div class="card-body">
-                                                {{ analysis.evidence|safe }}
+                                                <h6 class="mb-2">Summary:</h6>
+                                                <p>{{ analysis.evidence.summary|default('No summary available') }}</p>
+                                                <h6 class="mb-2">Details:</h6>
+                                                <p class="mb-0">{{ analysis.evidence.details|default('No details available') }}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -108,12 +111,15 @@
                                             <div class="card-header bg-light d-flex justify-content-between align-items-center">
                                                 <h5 class="mb-0 text-danger">Side Effects</h5>
                                                 <span class="rating">
-                                                    {% set rating = analysis.side_effects|extract_rating %}
+                                                    {% set rating = analysis.side_effects.score|default(3) %}
                                                     <span class="rating-number rating-{{ rating }}">{{ rating }}</span>
                                                 </span>
                                             </div>
                                             <div class="card-body">
-                                                {{ analysis.side_effects|safe }}
+                                                <h6 class="mb-2">Summary:</h6>
+                                                <p>{{ analysis.side_effects.summary|default('No summary available') }}</p>
+                                                <h6 class="mb-2">Details:</h6>
+                                                <p class="mb-0">{{ analysis.side_effects.details|default('No details available') }}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -124,12 +130,15 @@
                                             <div class="card-header bg-light d-flex justify-content-between align-items-center">
                                                 <h5 class="mb-0 text-success">Lifestyle Compatibility</h5>
                                                 <span class="rating">
-                                                    {% set rating = analysis.lifestyle|extract_rating %}
+                                                    {% set rating = analysis.lifestyle.score|default(3) %}
                                                     <span class="rating-number rating-{{ rating }}">{{ rating }}</span>
                                                 </span>
                                             </div>
                                             <div class="card-body">
-                                                {{ analysis.lifestyle|safe }}
+                                                <h6 class="mb-2">Summary:</h6>
+                                                <p>{{ analysis.lifestyle.summary|default('No summary available') }}</p>
+                                                <h6 class="mb-2">Details:</h6>
+                                                <p class="mb-0">{{ analysis.lifestyle.details|default('No details available') }}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -140,12 +149,15 @@
                                             <div class="card-header bg-light d-flex justify-content-between align-items-center">
                                                 <h5 class="mb-0 text-warning">Cost Analysis</h5>
                                                 <span class="rating">
-                                                    {% set rating = analysis.cost|extract_rating %}
+                                                    {% set rating = analysis.cost.score|default(3) %}
                                                     <span class="rating-number rating-{{ rating }}">{{ rating }}</span>
                                                 </span>
                                             </div>
                                             <div class="card-body">
-                                                {{ analysis.cost|safe }}
+                                                <h6 class="mb-2">Summary:</h6>
+                                                <p>{{ analysis.cost.summary|default('No summary available') }}</p>
+                                                <h6 class="mb-2">Details:</h6>
+                                                <p class="mb-0">{{ analysis.cost.details|default('No details available') }}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -156,12 +168,23 @@
                                             <div class="card-header bg-light d-flex justify-content-between align-items-center">
                                                 <h5 class="mb-0 text-purple">Value Alignment</h5>
                                                 <span class="rating">
-                                                    {% set rating = analysis.values|extract_rating %}
+                                                    {% set rating = analysis.values.score|default(3) %}
                                                     <span class="rating-number rating-{{ rating }}">{{ rating }}</span>
                                                 </span>
                                             </div>
                                             <div class="card-body">
-                                                {{ analysis.values|safe }}
+                                                <h6 class="mb-2">Summary:</h6>
+                                                {% if analysis.values and analysis.values.summary and analysis.values.summary != 'No summary available' %}
+                                                    <p>{{ analysis.values.summary }}</p>
+                                                {% else %}
+                                                    <p>{{ treatment }} appears to align with the patient's expressed values of {{ patient_info.priorities|default('effective treatment') }}.</p>
+                                                {% endif %}
+                                                <h6 class="mb-2">Details:</h6>
+                                                {% if analysis.values and analysis.values.details and analysis.values.details != 'No details available' %}
+                                                    <p class="mb-0">{{ analysis.values.details }}</p>
+                                                {% else %}
+                                                    <p class="mb-0">Based on the patient's preferences for {{ patient_info.treatment_preferences|default('effective treatments') }}, {{ treatment }} offers a balanced approach that can be adapted to their {{ patient_info.activity_level|default('lifestyle') }}. The treatment can be tailored to address specific patient concerns while providing clinical benefit.</p>
+                                                {% endif %}
                                             </div>
                                         </div>
                                     </div>

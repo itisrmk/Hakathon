@@ -1,2 +1,0 @@
-# Hakathon
-Treatment Navigator

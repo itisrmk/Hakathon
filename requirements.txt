@@ -1,15 +1,31 @@
+# # Flask and related packages
+# flask==2.3.3
+# python-dotenv==1.0.0
+
+# # Azure AI Foundry packages
+# azure-ai-projects==1.0.0
+# azure-identity==1.15.0
+# azure-search-documents==11.4.0
+
+# # Extra utilities
+# semantic-kernel==0.4.0
+# openai==1.5.0
+
+# # For asynchronous operations
+# aiohttp==3.8.5
+
 # Flask and related packages
-flask==2.3.3
-python-dotenv==1.0.0
+flask
+python-dotenv
 
 # Azure AI Foundry packages
-azure-ai-projects==1.0.0
-azure-identity==1.15.0
-azure-search-documents==11.4.0
+azure-ai-projects
+azure-identity
+azure-search-documents
 
 # Extra utilities
-semantic-kernel==0.4.0
-openai==1.5.0
+semantic-kernel
+openai
 
 # For asynchronous operations
-aiohttp==3.8.5
+aiohttp

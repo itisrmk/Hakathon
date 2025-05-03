@@ -15,6 +15,9 @@ class Config:
     
     # Azure AI Foundry configuration
     AI_FOUNDRY_CONNECTION_STRING = os.getenv('AI_FOUNDRY_CONNECTION_STRING')
+    AI_FOUNDRY_SUBSCRIPTION_ID = os.getenv('AI_FOUNDRY_SUBSCRIPTION_ID')
+    AI_FOUNDRY_RESOURCE_GROUP = os.getenv('AI_FOUNDRY_RESOURCE_GROUP')
+    AI_FOUNDRY_PROJECT_NAME = os.getenv('AI_FOUNDRY_PROJECT_NAME')
     
     # Agent IDs
     EVIDENCE_AGENT_ID = os.getenv('EVIDENCE_AGENT_ID')
@@ -28,8 +31,12 @@ class Config:
     AZURE_OPENAI_API_KEY = os.getenv('AZURE_OPENAI_API_KEY')
     AZURE_OPENAI_ENDPOINT = os.getenv('AZURE_OPENAI_ENDPOINT')
     AZURE_OPENAI_API_VERSION = os.getenv('AZURE_OPENAI_API_VERSION', '2023-05-15')
+    AZURE_OPENAI_DEPLOYMENT_ID = os.getenv('AZURE_OPENAI_DEPLOYMENT_ID', 'gpt-4')
     
     # Azure AI Search configuration
     AZURE_SEARCH_ENDPOINT = os.getenv('AZURE_SEARCH_ENDPOINT')
     AZURE_SEARCH_KEY = os.getenv('AZURE_SEARCH_KEY')
     AZURE_SEARCH_INDEX = os.getenv('AZURE_SEARCH_INDEX', 'medical-treatments-index')
+    
+    # Bing Search API configuration
+    BING_SEARCH_API_KEY = os.getenv('BING_SEARCH_API_KEY')
